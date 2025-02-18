@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      giraffe-walking3_0: -3190757642115877927
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
