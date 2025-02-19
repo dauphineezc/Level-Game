@@ -1,52 +1,62 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro; // Import TextMeshPro
 
 public class GiraffeWalk : MonoBehaviour
 {
     public Sprite[] walkSprites; 
-    public Sprite pickupSprite;  // Head-up sprite for picking up
+    public Sprite pickupSprite;  
     public float frameRate = 0.2f; 
     public float speed = 3f;
-
     private SpriteRenderer spriteRenderer;
     private int currentFrame;
     private float timer;
     private bool isPickingUp;
+    private int foodCollected = 0;
+    private int maxFood = 5;
+    public TextMeshProUGUI counterText;
+    public Image appleIcon;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Find UI elements in the scene
+        counterText = GameObject.Find("CounterText").GetComponent<TextMeshProUGUI>();
+        appleIcon = GameObject.Find("AppleIcon").GetComponent<Image>();
+
+        UpdateFoodCounter();
     }
 
     void Update()
     {
-        // Handle Pickup (R Key)
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKey(KeyCode.F))
         {
             spriteRenderer.sprite = pickupSprite;
             isPickingUp = true;
-            return; // Skip movement if picking up
         }
         else
         {
             isPickingUp = false;
         }
 
-        // Handle Movement (A/D Keys Only)
-        float horizontal = 0;
-        if (Input.GetKey(KeyCode.A)) horizontal = -1;
-        if (Input.GetKey(KeyCode.D)) horizontal = 1;
-
-        transform.Translate(new Vector2(horizontal, 0) * speed * Time.deltaTime);
-
-        // Animate Walking
-        if (horizontal != 0)
+        if (!isPickingUp)
         {
-            AnimateWalk();
-            spriteRenderer.flipX = horizontal < 0;
-        }
-        else
-        {
-            spriteRenderer.sprite = walkSprites[0]; // Idle frame
+            float horizontal = 0;
+            if (Input.GetKey(KeyCode.A)) horizontal = -1;
+            if (Input.GetKey(KeyCode.D)) horizontal = 1;
+
+            transform.Translate(new Vector2(horizontal, 0) * speed * Time.deltaTime);
+
+            if (horizontal != 0)
+            {
+                AnimateWalk();
+                spriteRenderer.flipX = horizontal < 0;
+            }
+            else
+            {
+                spriteRenderer.sprite = walkSprites[0]; 
+            }
         }
     }
 
@@ -58,6 +68,32 @@ public class GiraffeWalk : MonoBehaviour
             timer -= frameRate;
             currentFrame = (currentFrame + 1) % walkSprites.Length;
             spriteRenderer.sprite = walkSprites[currentFrame];
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Food") && Input.GetKey(KeyCode.F))
+        {
+            CollectFood(other.gameObject);
+        }
+    }
+
+    void CollectFood(GameObject food)
+    {
+        if (foodCollected < maxFood)
+        {
+            foodCollected++;
+            Destroy(food);
+            UpdateFoodCounter();
+        }
+    }
+
+    void UpdateFoodCounter()
+    {
+        if (counterText != null)
+        {
+            counterText.text = foodCollected + "/" + maxFood;
         }
     }
 }
