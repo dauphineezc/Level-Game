@@ -12,20 +12,10 @@ public class GiraffeWalk : MonoBehaviour
     private int currentFrame;
     private float timer;
     private bool isPickingUp;
-    private int foodCollected = 0;
-    private int maxFood = 5;
-    public TextMeshProUGUI counterText;
-    public Image appleIcon;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Find UI elements in the scene
-        counterText = GameObject.Find("CounterText").GetComponent<TextMeshProUGUI>();
-        appleIcon = GameObject.Find("AppleIcon").GetComponent<Image>();
-
-        UpdateFoodCounter();
     }
 
     void Update()
@@ -81,19 +71,10 @@ public class GiraffeWalk : MonoBehaviour
 
     void CollectFood(GameObject food)
     {
-        if (foodCollected < maxFood)
+        if (FoodCounter.Instance != null)
         {
-            foodCollected++;
-            Destroy(food);
-            UpdateFoodCounter();
+            FoodCounter.Instance.AddFood();
         }
-    }
-
-    void UpdateFoodCounter()
-    {
-        if (counterText != null)
-        {
-            counterText.text = foodCollected + "/" + maxFood;
-        }
+        Destroy(food);
     }
 }

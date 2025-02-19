@@ -4,54 +4,78 @@ public class DogMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float jumpForce = 7f;
+    public float jumpForce = 5f;
+
+    [Header("Animation Settings")]
+    [SerializeField] private Sprite[] walkSprites;
+    public float frameRate = 0.2f; // Speed of animation
 
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
     private Collider2D playerCollider;
-    private Collider2D groundTrigger; // Additional trigger component
-    public bool isGrounded = false;
-    private bool isDrilling = false; // Whether the player is currently drilling
-    private GameObject currentGround; // The current ground object the player is in contact with
+    private bool isGrounded = false;
+    private bool isDrilling = false;
+    private GameObject currentGround;
+    private int currentFrame;
+    private float timer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         playerCollider = GetComponent<Collider2D>();
-        groundTrigger = GetComponentInChildren<Collider2D>(); // Get the trigger component from the child object
     }
 
     void Update()
     {
-        Move();
-        Jump();
+        if (!isDrilling)
+        {
+            Move();
+            Jump();
+        }
+
         Drill();
+        PickUpFood();
     }
 
     void Move()
     {
-        if (isDrilling) {
-            float moveX = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0) + (Input.GetKey(KeyCode.LeftArrow) ? -1 : 0); // Move left/right using ←/→
-            float moveY = (Input.GetKey(KeyCode.UpArrow) ? 1 : 0) + (Input.GetKey(KeyCode.DownArrow) ? -1 : 0);   // Move up/down using ↑/↓
+        float moveInput = 0;
+        if (Input.GetKey(KeyCode.RightArrow)) moveInput = 1;
+        if (Input.GetKey(KeyCode.LeftArrow)) moveInput = -1;
 
-            rb.linearVelocity = new Vector2(moveX * moveSpeed, moveY * moveSpeed);
-            return;
-        }
-        float moveInput = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0) + (Input.GetKey(KeyCode.LeftArrow) ? -1 : 0);
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+
+        if (moveInput != 0)
+        {
+            AnimateWalk();
+            spriteRenderer.flipX = moveInput < 0; // Flip sprite for left movement
+        }
+        else
+        {
+            spriteRenderer.sprite = walkSprites[0]; // Idle sprite
+        }
+    }
+
+    void AnimateWalk()
+    {
+        timer += Time.deltaTime;
+        if (timer >= frameRate)
+        {
+            timer -= frameRate;
+            currentFrame = (currentFrame + 1) % walkSprites.Length;
+            spriteRenderer.sprite = walkSprites[currentFrame];
+        }
     }
 
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
         {
-            Debug.Log("Can Jump");
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            
-            // Exit drilling mode when jumping and leaving the current ground
-            if (isDrilling)
-            {
-                isDrilling = false; 
-            }
+            Debug.Log("Dog Jumping");
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isGrounded = false;
         }
     }
 
@@ -61,21 +85,39 @@ public class DogMovement : MonoBehaviour
         {
             Debug.Log("Start Drilling");
             isDrilling = true;
-            playerCollider.enabled = false; // Disable the main collider
-            rb.linearVelocity = Vector2.zero; // Stop all movement
-            rb.gravityScale = 0; // Disable gravity so the player stays underground
+            playerCollider.enabled = false;  // Disable the main collider
+            rb.gravityScale = 0;  // Remove gravity
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -3f); // Move downward slowly
+        }
+        else if (Input.GetKeyUp(KeyCode.DownArrow) && isDrilling)
+        {
+            Debug.Log("Stop Drilling");
+            isDrilling = false;
+            playerCollider.enabled = true;  // Re-enable the collider
+            rb.gravityScale = 2.5f;  // Restore gravity
+            rb.linearVelocity = Vector2.zero; // Stop downward movement
         }
     }
 
-    // **Enable collider again when leaving the current ground**
-    void OnTriggerExit2D(Collider2D collision)
+    void PickUpFood()
     {
-        if (collision.gameObject == currentGround && isDrilling)
+        if (Input.GetKeyDown(KeyCode.RightShift))
         {
-            Debug.Log("Exited ground, enabling collider");
-            isDrilling = false;
-            playerCollider.enabled = true; // Re-enable the main collider
-            rb.gravityScale = 1; // Restore gravity
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.CompareTag("Food"))
+                {
+                    Debug.Log("Dog picked up food!");
+                    Destroy(collider.gameObject);
+
+                    if (FoodCounter.Instance != null)
+                    {
+                        FoodCounter.Instance.AddFood();
+                    }
+                    return;
+                }
+            }
         }
     }
 
@@ -83,17 +125,9 @@ public class DogMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("Entered collision with ground");
+            Debug.Log("Dog Landed on ground");
             isGrounded = true;
-            currentGround = collision.gameObject; // Record the ground the player is standing on
-        }
-    }
-
-    void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
+            currentGround = collision.gameObject;
         }
     }
 
@@ -101,7 +135,7 @@ public class DogMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("Is not collided");
+            Debug.Log("Dog Left ground");
             isGrounded = false;
         }
     }

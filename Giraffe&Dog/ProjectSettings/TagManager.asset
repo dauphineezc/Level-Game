@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Food
   - Giraffe
+  - Ground
+  - Dog
   layers:
   - Default
   - TransparentFX
