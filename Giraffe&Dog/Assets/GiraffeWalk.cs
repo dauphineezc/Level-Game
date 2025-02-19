@@ -70,12 +70,17 @@ public class GiraffeWalk : MonoBehaviour
             spriteRenderer.sprite = walkSprites[currentFrame];
         }
     }
-
+    
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Food") && Input.GetKey(KeyCode.F))
+        if (other.CompareTag("Food"))
         {
-            CollectFood(other.gameObject);
+            Debug.Log("Giraffe is near food.");
+            if (Input.GetKey(KeyCode.F))
+            {
+                Debug.Log("F key pressed, picking up food.");
+                CollectFood(other.gameObject);
+            }
         }
     }
 

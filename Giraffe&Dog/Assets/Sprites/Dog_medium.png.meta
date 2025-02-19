@@ -759,7 +759,33 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Dog_medium_0: 5560366573009867033
+      Dog_medium_1: -7221519347371870127
+      Dog_medium_10: 4486008218501741429
+      Dog_medium_11: -7244992038358369233
+      Dog_medium_12: -6687739875117330786
+      Dog_medium_13: -2774480575467024873
+      Dog_medium_14: 4850657503644222214
+      Dog_medium_15: -4849948641820386415
+      Dog_medium_16: -6383811083959848930
+      Dog_medium_17: -4135106852860731202
+      Dog_medium_18: -8367141891697202157
+      Dog_medium_19: 746882030749991918
+      Dog_medium_2: 7619186100556355604
+      Dog_medium_20: 8861611303283012847
+      Dog_medium_21: -3547594534527997438
+      Dog_medium_22: -482389280478754056
+      Dog_medium_23: 3558699048161242497
+      Dog_medium_24: 2071156227177972786
+      Dog_medium_25: -4741338131589193561
+      Dog_medium_3: -7395590962656844697
+      Dog_medium_4: -3213243323252850788
+      Dog_medium_5: 1803165379710363668
+      Dog_medium_6: 8562171656437490251
+      Dog_medium_7: 4768966190241830928
+      Dog_medium_8: 247495586064341447
+      Dog_medium_9: 6848044326915744681
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
