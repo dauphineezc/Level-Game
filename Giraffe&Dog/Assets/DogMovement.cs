@@ -8,16 +8,16 @@ public class DogMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private Collider2D playerCollider;
-    private Collider2D groundTrigger; // 额外的 Trigger 组件
+    private Collider2D groundTrigger; // Additional trigger component
     public bool isGrounded = false;
-    private bool isDrilling = false; // 是否正在钻地
-    private GameObject currentGround; // 当前接触的Ground对象
+    private bool isDrilling = false; // Whether the player is currently drilling
+    private GameObject currentGround; // The current ground object the player is in contact with
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
-        groundTrigger = GetComponentInChildren<Collider2D>(); // 获取子对象上的 Trigger
+        groundTrigger = GetComponentInChildren<Collider2D>(); // Get the trigger component from the child object
     }
 
     void Update()
@@ -30,13 +30,13 @@ public class DogMovement : MonoBehaviour
     void Move()
     {
         if (isDrilling) {
-            float moveX = Input.GetAxis("Horizontal"); // A/D 或 ←/→ 控制左右
-            float moveY = Input.GetAxis("Vertical");   // W/S 或 ↑/↓ 控制上下
+            float moveX = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0) + (Input.GetKey(KeyCode.LeftArrow) ? -1 : 0); // Move left/right using ←/→
+            float moveY = (Input.GetKey(KeyCode.UpArrow) ? 1 : 0) + (Input.GetKey(KeyCode.DownArrow) ? -1 : 0);   // Move up/down using ↑/↓
 
             rb.linearVelocity = new Vector2(moveX * moveSpeed, moveY * moveSpeed);
             return;
         }
-        float moveInput = Input.GetAxis("Horizontal");
+        float moveInput = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0) + (Input.GetKey(KeyCode.LeftArrow) ? -1 : 0);
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
     }
 
@@ -47,7 +47,7 @@ public class DogMovement : MonoBehaviour
             Debug.Log("Can Jump");
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             
-            // 退出钻地模式的条件：跳起并离开当前 Ground
+            // Exit drilling mode when jumping and leaving the current ground
             if (isDrilling)
             {
                 isDrilling = false; 
@@ -57,25 +57,25 @@ public class DogMovement : MonoBehaviour
 
     void Drill()
     {
-        if (Input.GetKeyDown(KeyCode.S) && isGrounded && !isDrilling)
+        if (Input.GetKeyDown(KeyCode.DownArrow) && isGrounded && !isDrilling)
         {
             Debug.Log("Start Drilling");
             isDrilling = true;
-            playerCollider.enabled = false; // 关闭主碰撞体
-            rb.linearVelocity = Vector2.zero; // 停止所有运动
-            rb.gravityScale = 0; // 停止重力，使玩家停留在地里
+            playerCollider.enabled = false; // Disable the main collider
+            rb.linearVelocity = Vector2.zero; // Stop all movement
+            rb.gravityScale = 0; // Disable gravity so the player stays underground
         }
     }
 
-    // **当离开当前地面时，恢复碰撞**
+    // **Enable collider again when leaving the current ground**
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject == currentGround && isDrilling)
         {
             Debug.Log("Exited ground, enabling collider");
             isDrilling = false;
-            playerCollider.enabled = true; // 重新开启主碰撞体
-            rb.gravityScale = 1; // 恢复重力
+            playerCollider.enabled = true; // Re-enable the main collider
+            rb.gravityScale = 1; // Restore gravity
         }
     }
 
@@ -85,7 +85,7 @@ public class DogMovement : MonoBehaviour
         {
             Debug.Log("Entered collision with ground");
             isGrounded = true;
-            currentGround = collision.gameObject; // 记录当前站立的地面
+            currentGround = collision.gameObject; // Record the ground the player is standing on
         }
     }
 
