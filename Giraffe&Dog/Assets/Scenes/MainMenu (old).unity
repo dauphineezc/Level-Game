@@ -178,8 +178,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Play Level 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3dded36a5599ea04b9860be064c832f1, type: 2}
-  m_sharedMaterial: {fileID: 520948873766530966, guid: 3dded36a5599ea04b9860be064c832f1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -534,8 +534,8 @@ Transform:
   m_GameObject: {fileID: 507556258}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -960.08, y: -469.89, z: -0.087528}
-  m_LocalScale: {x: 1.1207366, y: 1.1207366, z: 1.1207366}
+  m_LocalPosition: {x: -55.321957, y: -66.21561, z: -6.480914}
+  m_LocalScale: {x: 83.41592, y: 83.41592, z: 83.41592}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 726026800}
@@ -989,8 +989,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Play Level 2
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3dded36a5599ea04b9860be064c832f1, type: 2}
-  m_sharedMaterial: {fileID: 520948873766530966, guid: 3dded36a5599ea04b9860be064c832f1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

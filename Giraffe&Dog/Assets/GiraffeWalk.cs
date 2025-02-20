@@ -75,6 +75,10 @@ public class GiraffeWalk : MonoBehaviour
         {
             FoodCounter.Instance.AddFood();
         }
+        if (FoodCounterLVL2.Instance != null)
+        {
+            FoodCounterLVL2.Instance.AddFood();
+        }
         Destroy(food);
     }
 }
